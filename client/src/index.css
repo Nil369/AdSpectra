@@ -161,3 +161,146 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Scroll-bar & Text-Seclection Styling */
+
+.invisible-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  border-radius: 50px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #222e35;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #8a99a88f;
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #6c7d8d8f;
+}
+
+::selection {
+  background-color: #8cc2ff84;
+  color: #002858;
+}
+
+/* Dark mode selection color */
+.dark ::selection {
+  background-color: #2b5c9d9b;
+  color: #fafcff;
+}
+
+/* Custom styles without gradients - moved to Tailwind */
+
+/* Logo styling */
+.logo-image {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.2s ease-in-out;
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+}
+
+/* Remove number input arrows */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Smooth animations */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Glass morphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-effect {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Hover effects for cards */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.dark .hover-lift:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Animated background for hero section */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(-45deg, hsl(var(--primary)), hsl(var(--chart-2)), hsl(var(--chart-3)), hsl(var(--accent)));
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Pulse animation for loading states */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

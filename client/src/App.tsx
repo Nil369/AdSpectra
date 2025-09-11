@@ -1,13 +1,22 @@
-import { ModeToggle } from "./components/mode-toggle"
-import { Button } from "./components/ui/button"
-
+import { Routes, Route } from "react-router"
+import { Header } from "./components/Header"
+import { Footer } from "./components/Footer"
+import { HomePage } from "./pages/HomePage"
+import { PredictionPage } from "./pages/PredictionPage"
+import { AnalyticsPage } from "./pages/AnalyticsPage"
 
 function App() {
 	return (
-		<div>
-			<h1 className="text-4xl font-bold mb-2">Hello from AdSpectra</h1>
-			<Button className="mr-2">Click Me</Button>
-			<ModeToggle/>
+		<div className="min-h-screen flex flex-col">
+			<Header />
+			<main className="flex-1">
+				<Routes>
+					<Route path="/" element={<HomePage />} />
+					<Route path="/prediction" element={<PredictionPage />} />
+					<Route path="/analytics" element={<AnalyticsPage />} />
+				</Routes>
+			</main>
+			<Footer />
 		</div>
 	)
 }

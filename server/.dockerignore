@@ -1,0 +1,12 @@
+venv
+.venv
+.python-version
+pyproject.toml
+uv.lock
+__pycache__
+*.pyc
+Dockerfile
+.dockerignore
+docker-compose.yml
+.env
+model-training

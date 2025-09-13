@@ -19,11 +19,8 @@ export default defineConfig({
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        }
+        // Remove headers here; they do not affect production or actual API responses
+        // CORS must be handled by the target server, not the proxy
       }
     }
   }

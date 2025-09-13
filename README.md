@@ -9,6 +9,8 @@
 
 <img src="./assets/api-docs.png" alt="API Docs">
 
+<img src="./assets/model-response.png" alt="Model Response"><br/>
+
 ---
 ## Frontend: Build with React
 <img src="./assets/landing-page.png" alt="Landing Page"><br/>
@@ -16,3 +18,5 @@
 <img src="./assets/predictions.png" alt="Predict Page"><br/>
 
 <img src="./assets/analytics.png" alt="Analytics Page"><br/>
+
+---

@@ -57,23 +57,7 @@ export function PredictionPage() {
         Newspaper_Ad_Budget: parseFloat(data.newspaperBudget),
       }
       
-      // Try proxy first, fallback to direct API if needed
-      let response: any;
-      try {
-        response = await axios.post<ApiResponse>('/api/predict', payload)
-      } catch (proxyError) {
-        console.log('Proxy failed, trying direct API call...')
-        response = await axios.post<ApiResponse>(
-          'https://apispectra.akashhalder.in/predict',
-          payload,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            }
-          }
-        )
-      }
-      
+      const response = await axios.post<ApiResponse>('/api/predict', payload)
       setPrediction(response.data)
     } catch (error) {
       console.error("Prediction failed:", error)
@@ -111,7 +95,7 @@ export function PredictionPage() {
                     name="tvBudget"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>TV Advertising Budget (₹)</FormLabel>
+                        <FormLabel>TV Advertising Budget (₹ Thousands)</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
@@ -133,7 +117,7 @@ export function PredictionPage() {
                     name="radioBudget"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Radio Advertising Budget (₹)</FormLabel>
+                        <FormLabel>Radio Advertising Budget (₹ Thousands)</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
@@ -155,7 +139,7 @@ export function PredictionPage() {
                     name="newspaperBudget"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Newspaper Advertising Budget (₹)</FormLabel>
+                        <FormLabel>Newspaper Advertising Budget (₹ Thousands)</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
@@ -232,7 +216,7 @@ export function PredictionPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold text-green-800 dark:text-green-200">
-                      ₹{prediction.prediction.prediction.toFixed(2)}
+                      ₹{prediction.prediction.prediction.toFixed(2)} x 10 <sup>6</sup> Lakh
                     </div>
                     <p className="text-sm text-green-600 dark:text-green-400 mt-2">
                       Based on your budget allocation

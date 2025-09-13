@@ -66,21 +66,7 @@ export function AnalyticsPage() {
     useEffect(() => {
         const fetchAnalytics = async () => {
             try {
-                // Try proxy first, fallback to direct API if needed
-                let response: any;
-                try {
-                    response = await axios.get<AnalyticsResponse>('/api/analytics')
-                } catch (proxyError) {
-                    console.log('Proxy failed, trying direct API call...')
-                    response = await axios.get<AnalyticsResponse>(
-                        'https://apispectra.akashhalder.in/analytics',
-                        {
-                            headers: {
-                                'Content-Type': 'application/json',
-                            }
-                        }
-                    )
-                }
+                const response = await axios.get<AnalyticsResponse>('/api/analytics')
                 setAnalytics(response.data)
             } catch (error) {
                 console.error("Failed to fetch analytics:", error)
@@ -197,7 +183,7 @@ export function AnalyticsPage() {
                                     <YAxis dataKey="sales" name="Sales" />
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <Tooltip formatter={(value, name) => [
-                                        name === "sales" ? `₹${Number(value).toFixed(2)}` : `₹${Number(value).toFixed(2)}`,
+                                        name === "sales" ? `₹${Number(value).toFixed(2)} x 10⁶ Lakh` : `₹${Number(value).toFixed(2)} Thousands`,
                                         name === "sales" ? "Sales" : "Total Budget"
                                     ]} />
                                     <Scatter dataKey="sales" fill="#8884d8" />
@@ -217,7 +203,7 @@ export function AnalyticsPage() {
                                 <BarChart data={budgetDistribution}>
                                     <XAxis dataKey="name" />
                                     <YAxis />
-                                    <Tooltip formatter={(value) => [`₹${Number(value).toFixed(2)}`, 'Average Budget']} />
+                                    <Tooltip formatter={(value) => [`₹${Number(value).toFixed(2)} Thousands`, 'Average Budget']} />
                                     <Bar dataKey="value" fill="#8884d8" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -247,7 +233,7 @@ export function AnalyticsPage() {
                                             <Cell key={`cell-${index}`} fill={entry.color} />
                                         ))}
                                     </Pie>
-                                    <Tooltip formatter={(value) => `₹${Number(value).toFixed(2)}`} />
+                                    <Tooltip formatter={(value) => `₹${Number(value).toFixed(2)} Thousands`} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </CardContent>
@@ -265,7 +251,7 @@ export function AnalyticsPage() {
                                     <XAxis dataKey="id" />
                                     <YAxis />
                                     <Tooltip formatter={(value, name) => [
-                                        `₹${Number(value).toFixed(2)}`,
+                                        name === 'tvBudget' ? `₹${Number(value).toFixed(2)} Thousands` : `₹${Number(value).toFixed(2)} x 10⁶ Lakh`,
                                         name === 'tvBudget' ? 'TV Budget' : 'Sales'
                                     ]} />
                                     <Legend />
@@ -289,27 +275,27 @@ export function AnalyticsPage() {
                                 <h3 className="text-lg font-semibold mb-2">TV Advertising</h3>
                                 <div className="space-y-1">
                                     <p className="text-sm text-muted-foreground">Average Budget</p>
-                                    <p className="text-xl font-bold">₹{(processedData.reduce((sum, item) => sum + item.tvBudget, 0) / processedData.length).toFixed(2)}</p>
-                                    <p className="text-sm text-muted-foreground">Max: ₹{Math.max(...processedData.map(item => item.tvBudget)).toFixed(2)}</p>
-                                    <p className="text-sm text-muted-foreground">Min: ₹{Math.min(...processedData.map(item => item.tvBudget)).toFixed(2)}</p>
+                                    <p className="text-xl font-bold">₹{(processedData.reduce((sum, item) => sum + item.tvBudget, 0) / processedData.length).toFixed(2)} Thousands</p>
+                                    <p className="text-sm text-muted-foreground">Max: ₹{Math.max(...processedData.map(item => item.tvBudget)).toFixed(2)} Thousands</p>
+                                    <p className="text-sm text-muted-foreground">Min: ₹{Math.min(...processedData.map(item => item.tvBudget)).toFixed(2)} Thousands</p>
                                 </div>
                             </div>
                             <div className="text-center">
                                 <h3 className="text-lg font-semibold mb-2">Radio Advertising</h3>
                                 <div className="space-y-1">
                                     <p className="text-sm text-muted-foreground">Average Budget</p>
-                                    <p className="text-xl font-bold">₹{(processedData.reduce((sum, item) => sum + item.radioBudget, 0) / processedData.length).toFixed(2)}</p>
-                                    <p className="text-sm text-muted-foreground">Max: ₹{Math.max(...processedData.map(item => item.radioBudget)).toFixed(2)}</p>
-                                    <p className="text-sm text-muted-foreground">Min: ₹{Math.min(...processedData.map(item => item.radioBudget)).toFixed(2)}</p>
+                                    <p className="text-xl font-bold">₹{(processedData.reduce((sum, item) => sum + item.radioBudget, 0) / processedData.length).toFixed(2)} Thousands</p>
+                                    <p className="text-sm text-muted-foreground">Max: ₹{Math.max(...processedData.map(item => item.radioBudget)).toFixed(2)} Thousands</p>
+                                    <p className="text-sm text-muted-foreground">Min: ₹{Math.min(...processedData.map(item => item.radioBudget)).toFixed(2)} Thousands</p>
                                 </div>
                             </div>
                             <div className="text-center">
                                 <h3 className="text-lg font-semibold mb-2">Newspaper Advertising</h3>
                                 <div className="space-y-1">
                                     <p className="text-sm text-muted-foreground">Average Budget</p>
-                                    <p className="text-xl font-bold">₹{(processedData.reduce((sum, item) => sum + item.newspaperBudget, 0) / processedData.length).toFixed(2)}</p>
-                                    <p className="text-sm text-muted-foreground">Max: ₹{Math.max(...processedData.map(item => item.newspaperBudget)).toFixed(2)}</p>
-                                    <p className="text-sm text-muted-foreground">Min: ₹{Math.min(...processedData.map(item => item.newspaperBudget)).toFixed(2)}</p>
+                                    <p className="text-xl font-bold">₹{(processedData.reduce((sum, item) => sum + item.newspaperBudget, 0) / processedData.length).toFixed(2)} Thousands</p>
+                                    <p className="text-sm text-muted-foreground">Max: ₹{Math.max(...processedData.map(item => item.newspaperBudget)).toFixed(2)} Thousands</p>
+                                    <p className="text-sm text-muted-foreground">Min: ₹{Math.min(...processedData.map(item => item.newspaperBudget)).toFixed(2)} Thousands</p>
                                 </div>
                             </div>
                         </div>
@@ -318,15 +304,15 @@ export function AnalyticsPage() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Average Sales</p>
-                                    <p className="text-xl font-bold">₹{(processedData.reduce((sum, item) => sum + item.sales, 0) / processedData.length).toFixed(2)}</p>
+                                    <p className="text-xl font-bold">₹{(processedData.reduce((sum, item) => sum + item.sales, 0) / processedData.length).toFixed(2)} x 10⁶ Lakh</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Maximum Sales</p>
-                                    <p className="text-xl font-bold">₹{Math.max(...processedData.map(item => item.sales)).toFixed(2)}</p>
+                                    <p className="text-xl font-bold">₹{Math.max(...processedData.map(item => item.sales)).toFixed(2)} x 10⁶ Lakh</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Minimum Sales</p>
-                                    <p className="text-xl font-bold">₹{Math.min(...processedData.map(item => item.sales)).toFixed(2)}</p>
+                                    <p className="text-xl font-bold">₹{Math.min(...processedData.map(item => item.sales)).toFixed(2)} x 10⁶ Lakh</p>
                                 </div>
                             </div>
                         </div>

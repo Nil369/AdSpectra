@@ -4,6 +4,7 @@ import { Footer } from "./components/Footer"
 import { HomePage } from "./pages/HomePage"
 import { PredictionPage } from "./pages/PredictionPage"
 import { AnalyticsPage } from "./pages/AnalyticsPage"
+import { NotFoundPage } from "./pages/NotFoundPage"
 
 function App() {
 	return (
@@ -14,6 +15,7 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/prediction" element={<PredictionPage />} />
 					<Route path="/analytics" element={<AnalyticsPage />} />
+					<Route path="*" element={<NotFoundPage />} />
 				</Routes>
 			</main>
 			<Footer />

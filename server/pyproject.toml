@@ -5,8 +5,10 @@ description = "Backend for Advertising Sales Prediction"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.116.1",
+    "matplotlib>=3.10.6",
     "notebook>=7.4.5",
     "pandas>=2.3.2",
     "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
     "uvicorn>=0.35.0",
 ]

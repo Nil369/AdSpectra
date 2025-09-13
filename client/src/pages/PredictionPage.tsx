@@ -2,40 +2,48 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import axios from "axios"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Loader2, TrendingUp, DollarSign, Target } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Loader2, TrendingUp, IndianRupee } from "lucide-react"
 
 const formSchema = z.object({
   tvBudget: z.string().min(1, "TV budget is required"),
   radioBudget: z.string().min(1, "Radio budget is required"),
-  digitalBudget: z.string().min(1, "Digital budget is required"),
-  influencerBudget: z.string().min(1, "Influencer budget is required"),
-  outdoorBudget: z.string().min(1, "Outdoor budget is required"),
+  newspaperBudget: z.string().min(1, "Newspaper budget is required"),
 })
 
 type FormData = z.infer<typeof formSchema>
 
-interface PredictionResult {
-  predictedSales: number
-  roi: number
-  confidence: number
+interface ApiResponse {
+  success: boolean
+  input: {
+    "TV Ad Budget": number
+    "Radio Ad Budget": number  
+    "Newspaper Ad Budget": number
+  }
+  prediction: {
+    prediction: number
+    confidence_r2: number
+    mae: number
+    mse: number
+    rmse: number
+  }
 }
 
 export function PredictionPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const [prediction, setPrediction] = useState<PredictionResult | null>(null)
+  const [prediction, setPrediction] = useState<ApiResponse | null>(null)
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       tvBudget: "",
       radioBudget: "",
-      digitalBudget: "",
-      influencerBudget: "",
-      outdoorBudget: "",
+      newspaperBudget: "",
     },
   })
 
@@ -43,29 +51,30 @@ export function PredictionPage() {
     setIsLoading(true)
     
     try {
-      // Convert string values to numbers
-      const numericData = {
-        tvBudget: parseFloat(data.tvBudget),
-        radioBudget: parseFloat(data.radioBudget),
-        digitalBudget: parseFloat(data.digitalBudget),
-        influencerBudget: parseFloat(data.influencerBudget),
-        outdoorBudget: parseFloat(data.outdoorBudget),
+      const payload = {
+        TV_Ad_Budget: parseFloat(data.tvBudget),
+        Radio_Ad_Budget: parseFloat(data.radioBudget),
+        Newspaper_Ad_Budget: parseFloat(data.newspaperBudget),
       }
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Try proxy first, fallback to direct API if needed
+      let response: any;
+      try {
+        response = await axios.post<ApiResponse>('/api/predict', payload)
+      } catch (proxyError) {
+        console.log('Proxy failed, trying direct API call...')
+        response = await axios.post<ApiResponse>(
+          'https://apispectra.akashhalder.in/predict',
+          payload,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+        )
+      }
       
-      // Mock prediction result
-      const totalBudget = numericData.tvBudget + numericData.radioBudget + numericData.digitalBudget + numericData.influencerBudget + numericData.outdoorBudget
-      const predictedSales = totalBudget * (2.5 + Math.random() * 0.5)
-      const roi = (predictedSales / totalBudget) * 100
-      const confidence = 85 + Math.random() * 10
-      
-      setPrediction({
-        predictedSales,
-        roi,
-        confidence
-      })
+      setPrediction(response.data)
     } catch (error) {
       console.error("Prediction failed:", error)
     } finally {
@@ -102,11 +111,11 @@ export function PredictionPage() {
                     name="tvBudget"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>TV Advertising Budget ($)</FormLabel>
+                        <FormLabel>TV Advertising Budget (₹)</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
-                            placeholder="10000" 
+                            placeholder="230.1" 
                             {...field} 
                             className="text-lg"
                           />
@@ -124,11 +133,11 @@ export function PredictionPage() {
                     name="radioBudget"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Radio Advertising Budget ($)</FormLabel>
+                        <FormLabel>Radio Advertising Budget (₹)</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
-                            placeholder="5000" 
+                            placeholder="37.2" 
                             {...field} 
                             className="text-lg"
                           />
@@ -143,64 +152,20 @@ export function PredictionPage() {
 
                   <FormField
                     control={form.control}
-                    name="digitalBudget"
+                    name="newspaperBudget"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Digital Advertising Budget ($)</FormLabel>
+                        <FormLabel>Newspaper Advertising Budget (₹)</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
-                            placeholder="15000" 
+                            placeholder="69.97" 
                             {...field} 
                             className="text-lg"
                           />
                         </FormControl>
                         <FormDescription>
-                          Budget for online and digital advertising
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="influencerBudget"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Influencer Marketing Budget ($)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            placeholder="8000" 
-                            {...field} 
-                            className="text-lg"
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Budget for influencer partnerships
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="outdoorBudget"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Outdoor Advertising Budget ($)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            placeholder="3000" 
-                            {...field} 
-                            className="text-lg"
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Budget for billboards and outdoor advertising
+                          Budget for newspaper advertising
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -228,7 +193,35 @@ export function PredictionPage() {
 
           {/* Results Section */}
           <div className="space-y-6">
-            {prediction ? (
+            {isLoading ? (
+              <>
+                <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-green-800 dark:text-green-200">
+                      <TrendingUp className="mr-2 h-5 w-5" />
+                      Predicted Sales
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Skeleton className="h-8 w-32 mb-2" />
+                    <Skeleton className="h-4 w-48" />
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-blue-800 dark:text-blue-200">
+                      <IndianRupee className="mr-2 h-5 w-5" />
+                      Model Confidence (R²)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Skeleton className="h-8 w-24 mb-2" />
+                    <Skeleton className="h-4 w-40" />
+                  </CardContent>
+                </Card>
+              </>
+            ) : prediction ? (
               <>
                 <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
                   <CardHeader>
@@ -239,7 +232,7 @@ export function PredictionPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold text-green-800 dark:text-green-200">
-                      ${prediction.predictedSales.toLocaleString()}
+                      ₹{prediction.prediction.prediction.toFixed(2)}
                     </div>
                     <p className="text-sm text-green-600 dark:text-green-400 mt-2">
                       Based on your budget allocation
@@ -250,33 +243,16 @@ export function PredictionPage() {
                 <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
                   <CardHeader>
                     <CardTitle className="flex items-center text-blue-800 dark:text-blue-200">
-                      <DollarSign className="mr-2 h-5 w-5" />
-                      Return on Investment
+                      <IndianRupee className="mr-2 h-5 w-5" />
+                      Model Confidence (R²)
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold text-blue-800 dark:text-blue-200">
-                      {prediction.roi.toFixed(1)}%
+                      {prediction.prediction.confidence_r2.toFixed(2)}%
                     </div>
                     <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
-                      Expected ROI from your investment
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-purple-800 dark:text-purple-200">
-                      <Target className="mr-2 h-5 w-5" />
-                      Confidence Score
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-3xl font-bold text-purple-800 dark:text-purple-200">
-                      {prediction.confidence.toFixed(1)}%
-                    </div>
-                    <p className="text-sm text-purple-600 dark:text-purple-400 mt-2">
-                      Model confidence in this prediction
+                      Model accuracy confidence score
                     </p>
                   </CardContent>
                 </Card>

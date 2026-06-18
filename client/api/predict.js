@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const apiUrl = 'https://apispectra.akashhalder.in/predict';
+    const apiUrl = 'https://debashruti2005-adspectra-api.hf.space/predict';
     
     const response = await fetch(apiUrl, {
       method: 'POST',

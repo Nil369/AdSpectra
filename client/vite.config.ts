@@ -15,7 +15,7 @@ export default defineConfig({
     cors: true,
     proxy: {
       '/api': {
-        target: 'https://apispectra.akashhalder.in',
+        target: 'https://debashruti2005-adspectra-api.hf.space',
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api/, ''),

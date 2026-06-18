@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const apiUrl = 'https://apispectra.akashhalder.in/analytics';
+    const apiUrl = 'https://debashruti2005-adspectra-api.hf.space/analytics';
     
     const response = await fetch(apiUrl, {
       method: req.method,
